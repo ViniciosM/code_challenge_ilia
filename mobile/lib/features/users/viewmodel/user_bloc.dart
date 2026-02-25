@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilia_users/features/users/data/repositories/user_repository.dart';
 import 'user_event.dart';
@@ -16,31 +15,53 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Future<void> _onGetUsers(GetUsers event, Emitter<UserState> emit) async {
     emit(state.copyWith(status: UserStatus.loading));
 
-    try {
-      final users = await _repository.getUsers();
-      emit(state.copyWith(status: UserStatus.success, users: users));
-    } catch (e, s) {
-      log('[BLOC - OnGetUsers] Error: $e | Stacktrace $s');
-      emit(
-        state.copyWith(status: UserStatus.failed, errorMessage: e.toString()),
-      );
-    }
+    final result = await _repository.getUsers();
+
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: UserStatus.failed,
+            errorMessage: failure.message,
+          ),
+        );
+      },
+      (users) {
+        emit(state.copyWith(status: UserStatus.success, users: users));
+      },
+    );
   }
 
   Future<void> _onAddUser(AddUser event, Emitter<UserState> emit) async {
     emit(state.copyWith(status: UserStatus.loading));
 
-    try {
-      await _repository.saveUser(user: event.user);
+    final saveResult = await _repository.saveUser(user: event.user);
 
-      final updatedUsers = await _repository.getUsers();
-
-      emit(state.copyWith(status: UserStatus.success, users: updatedUsers));
-    } catch (e, s) {
-      log('[BLOC - OnAddUsers] Error: $e | Stacktrace $s');
-      emit(
-        state.copyWith(status: UserStatus.failed, errorMessage: e.toString()),
+    if (saveResult.isLeft()) {
+      final failure = saveResult.fold(
+        (failure) => failure,
+        (_) => throw Exception(),
       );
+
+      emit(
+        state.copyWith(
+          status: UserStatus.failed,
+          errorMessage: failure.message,
+        ),
+      );
+      return;
     }
+
+    final getResult = await _repository.getUsers();
+
+    getResult.fold(
+      (failure) => emit(
+        state.copyWith(
+          status: UserStatus.failed,
+          errorMessage: failure.message,
+        ),
+      ),
+      (users) => emit(state.copyWith(status: UserStatus.success, users: users)),
+    );
   }
 }

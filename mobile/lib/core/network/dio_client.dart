@@ -5,16 +5,18 @@ import 'package:dio/dio.dart';
 class DioClient {
   late final Dio _dio;
 
-  DioClient() {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: 'http://localhost:3000', // ajustar depois
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-        sendTimeout: const Duration(seconds: 10),
-        headers: {'Content-Type': 'application/json'},
-      ),
-    );
+  DioClient({Dio? dio}) {
+    _dio =
+        dio ??
+        Dio(
+          BaseOptions(
+            baseUrl: 'http://localhost:3000', // ajustar depois
+            connectTimeout: const Duration(seconds: 10),
+            receiveTimeout: const Duration(seconds: 10),
+            sendTimeout: const Duration(seconds: 10),
+            headers: {'Content-Type': 'application/json'},
+          ),
+        );
 
     _dio.interceptors.add(
       InterceptorsWrapper(
