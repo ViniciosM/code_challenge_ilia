@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ilia_users/core/design_system/theme/app_colors.dart';
+import 'package:ilia_users/core/design_system/widgets/ui_text.dart';
+import 'package:ilia_users/core/design_system/widgets/ui_user_card.dart';
 import 'package:ilia_users/core/di/injector.dart';
 import 'package:ilia_users/features/users/view/create_user_view.dart';
 import 'package:ilia_users/features/users/viewmodel/create_user_bloc.dart';
@@ -40,8 +43,23 @@ class _UsersViewContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(title: const Text('Usuários')),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const UIText.header('Usuários'),
+        centerTitle: false,
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.sort_by_alpha, color: AppColors.primary),
+            tooltip: 'Ordernar por nome',
+            onPressed: () {
+              context.read<UserBloc>().add(SortUsersAlphabetically());
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: Container(
         color: Colors.white,
         child: BlocConsumer<UserBloc, UserState>(
@@ -65,44 +83,73 @@ class _UsersViewContent extends StatelessWidget {
                 );
               default:
                 if (state.users.isEmpty) {
-                  return const Center(child: Text('Nenhum usuário cadastrado'));
+                  return _buildEmptyState();
                 }
 
                 return ListView.builder(
+                  padding: const EdgeInsets.only(top: 8, bottom: 80),
                   itemCount: state.users.length,
                   itemBuilder: (_, index) {
                     final user = state.users[index];
-                    return ListTile(
-                      title: Text(user.name),
-                      subtitle: Text(user.email),
-                    );
+                    return UserCard(name: user.name, email: user.email);
                   },
                 );
             }
           },
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(16),
-        child: TextButton(
-          onPressed: () async {
-            final wasCreated = await showModalBottomSheet<bool>(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (_) => BlocProvider(
-                create: (_) => getIt<CreateUserBloc>(),
-                child: const CreateUserView(),
-              ),
-            );
-
-            if (wasCreated == true && context.mounted) {
-              context.read<UserBloc>().add(GetUsers());
-            }
-          },
-          child: const Icon(Icons.person_add_outlined, size: 30),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.primary,
+        onPressed: () => _openCreateUserModal(context),
+        label: const Text(
+          'Novo Usuário',
+          style: TextStyle(color: Colors.white),
         ),
+        icon: const Icon(Icons.add, color: Colors.white),
       ),
     );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.group_outlined,
+            size: 64,
+            color: AppColors.secondary.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          const UIText.body(
+            'Nenhum usuário por aqui...',
+            color: AppColors.textSecondary,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openCreateUserModal(BuildContext context) async {
+    final wasCreated = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => BlocProvider(
+        create: (_) => getIt<CreateUserBloc>(),
+        child: const CreateUserView(),
+      ),
+    );
+
+    if (wasCreated == true && context.mounted) {
+      context.read<UserBloc>().add(GetUsers());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Usuário cadastrado!'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 }

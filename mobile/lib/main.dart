@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ilia_users/core/design_system/theme/app_theme.dart';
 import 'package:ilia_users/core/di/injector.dart';
 import 'package:ilia_users/features/users/view/users_view.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'IliaUsers',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.blueAccent)),
+      theme: AppTheme.light,
       home: const UsersView(),
     );
   }

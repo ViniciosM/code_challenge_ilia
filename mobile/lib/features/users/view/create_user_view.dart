@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ilia_users/core/design_system/widgets/ui_button.dart';
 import 'package:ilia_users/features/users/viewmodel/create_user_bloc.dart';
 import 'package:ilia_users/features/users/viewmodel/create_user_event.dart';
 import 'package:ilia_users/features/users/viewmodel/create_user_state.dart';
@@ -122,15 +123,10 @@ class _CreateUserViewState extends State<CreateUserView> {
 
               const SizedBox(height: 24),
 
-              ElevatedButton(
+              UIButton(
+                label: 'Salvar Usuário',
                 onPressed: _submit,
-                child: submitting
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text('Salvar'),
+                isLoading: submitting,
               ),
             ],
           ),

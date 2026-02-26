@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ilia_users/features/users/data/models/user_model.dart';
 import 'package:ilia_users/features/users/data/repositories/user_repository.dart';
 import 'user_event.dart';
 import 'user_state.dart';
@@ -8,6 +9,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc(this._repository) : super(const UserState()) {
     on<GetUsers>(_onGetUsers);
+    on<SortUsersAlphabetically>(_onSortUsers);
   }
 
   Future<void> _onGetUsers(GetUsers event, Emitter<UserState> emit) async {
@@ -34,5 +36,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         );
       },
     );
+  }
+
+  void _onSortUsers(SortUsersAlphabetically event, Emitter<UserState> emit) {
+    final sortedList = List<UserModel>.from(state.users);
+
+    sortedList.sort(
+      (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+    );
+
+    emit(state.copyWith(users: sortedList));
   }
 }
