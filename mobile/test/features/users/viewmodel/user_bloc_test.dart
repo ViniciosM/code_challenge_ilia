@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ilia_users/features/users/data/network/response/app_exception.dart';
+import 'package:ilia_users/core/network/response/app_exception.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:ilia_users/features/users/viewmodel/user_bloc.dart';
 import 'package:ilia_users/features/users/viewmodel/user_event.dart';

@@ -1,6 +1,15 @@
 import 'dart:developer';
-
 import 'package:dio/dio.dart';
+import 'dart:io';
+
+import 'package:ilia_users/core/network/response/app_exception.dart';
+
+String get baseUrl {
+  if (Platform.isAndroid) {
+    return 'http://10.0.2.2:3000';
+  }
+  return 'http://localhost:3000';
+}
 
 class DioClient {
   late final Dio _dio;
@@ -10,10 +19,10 @@ class DioClient {
         dio ??
         Dio(
           BaseOptions(
-            baseUrl: 'http://localhost:3000', // ajustar depois
-            connectTimeout: const Duration(seconds: 10),
-            receiveTimeout: const Duration(seconds: 10),
-            sendTimeout: const Duration(seconds: 10),
+            baseUrl: baseUrl,
+            connectTimeout: const Duration(seconds: 5),
+            receiveTimeout: const Duration(seconds: 5),
+            sendTimeout: const Duration(seconds: 5),
             headers: {'Content-Type': 'application/json'},
           ),
         );
@@ -56,9 +65,13 @@ class DioClient {
     try {
       return await request();
     } on DioException catch (e, stackTrace) {
-      throw Exception(
-        'Network error: ${e.response?.data ?? e.message} | Stacktrace: $stackTrace',
-      );
+      log('[DIO CLIENT] Error: $e | Stacktrace $stackTrace');
+
+      if (e.response?.statusCode == 409) {
+        throw EmailAlreadyExistsFailure();
+      }
+
+      throw ServerFailure('Erro inesperado');
     } catch (e) {
       rethrow;
     }

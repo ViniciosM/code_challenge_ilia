@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:ilia_users/core/network/dio_client.dart';
+import 'package:ilia_users/features/users/viewmodel/create_user_bloc.dart';
 import '../../features/users/data/repositories/user_repository.dart';
 import '../../features/users/viewmodel/user_bloc.dart';
 
@@ -15,5 +16,6 @@ Future<void> setupInjector() async {
   );
 
   // Bloc
-  getIt.registerFactory(() => UserBloc(getIt<IUserRepository>()));
+  getIt.registerLazySingleton(() => UserBloc(getIt<IUserRepository>()));
+  getIt.registerFactory(() => CreateUserBloc(getIt<IUserRepository>()));
 }
