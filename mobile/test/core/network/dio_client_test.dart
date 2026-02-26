@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ilia_users/core/network/response/app_exception.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:ilia_users/core/network/dio_client.dart';
 
@@ -39,21 +40,55 @@ void main() {
     });
   });
 
-  test('should throw formatted exception when DioException occurs', () async {
-    // Arrange
-    final dioException = DioException(
-      requestOptions: RequestOptions(path: '/users'),
-      error: 'Server error',
+  group('DioClient - Exceptions', () {
+    test(
+      'should throw ServerFailure when a generic DioException occurs',
+      () async {
+        // Arrange
+        final dioException = DioException(
+          requestOptions: RequestOptions(path: '/users'),
+          type: DioExceptionType.connectionTimeout,
+        );
+
+        when(() => mockDio.get(any())).thenThrow(dioException);
+
+        // Act
+        final call = dioClient.get('/users');
+
+        // Assert
+        // Usamos isA<AppException> ou isA<ServerFailure> porque elas não herdam de Exception
+        await expectLater(call, throwsA(isA<ServerFailure>()));
+
+        verify(() => mockDio.get('/users')).called(1);
+      },
     );
 
-    when(() => mockDio.get('/users')).thenThrow(dioException);
+    test(
+      'should throw EmailAlreadyExistsFailure when status code is 409',
+      () async {
+        // Arrange
+        final dioException = DioException(
+          requestOptions: RequestOptions(path: '/users'),
+          response: Response(
+            requestOptions: RequestOptions(path: '/users'),
+            statusCode: 409,
+          ),
+        );
 
-    // Act
-    final call = dioClient.get('/users');
+        when(
+          () => mockDio.post(any(), data: any(named: 'data')),
+        ).thenThrow(dioException);
 
-    // Assert
-    await expectLater(call, throwsA(isA<Exception>()));
+        // Act
+        final call = dioClient.post('/users', data: {});
 
-    verify(() => mockDio.get('/users')).called(1);
+        // Assert
+        await expectLater(call, throwsA(isA<EmailAlreadyExistsFailure>()));
+
+        verify(
+          () => mockDio.post('/users', data: any(named: 'data')),
+        ).called(1);
+      },
+    );
   });
 }
