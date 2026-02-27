@@ -133,11 +133,9 @@ http://localhost:3000
  ```
 
  ## 📸 Evidences
- 
-
- | App | Bacend |
-| :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/2aefedc1-4e80-4506-9db5-f656090d9b3c" height="600"> | <img src="https://github.com/user-attachments/assets/57deb560-b971-4f75-a6c9-0c8d214b8ae1" height="600"> |
 
 
+| App | Backend | Validator Fields (Updated)|
+| :---: | :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/2aefedc1-4e80-4506-9db5-f656090d9b3c" height="600"> | <img src="https://github.com/user-attachments/assets/57deb560-b971-4f75-a6c9-0c8d214b8ae1" height="600"> | <img src="https://github.com/user-attachments/assets/81d59199-d5e9-4f61-ad34-4333f025722d" height="600"> |
  
