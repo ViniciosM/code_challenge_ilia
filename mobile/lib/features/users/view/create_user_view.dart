@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilia_users/core/design_system/widgets/ui_button.dart';
+import 'package:ilia_users/core/utils/validators.dart';
 import 'package:ilia_users/features/users/viewmodel/create_user_bloc.dart';
 import 'package:ilia_users/features/users/viewmodel/create_user_event.dart';
 import 'package:ilia_users/features/users/viewmodel/create_user_state.dart';
@@ -93,23 +94,16 @@ class _CreateUserViewState extends State<CreateUserView> {
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Nome'),
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Nome é obrigatório'
-                    : null,
+                validator: (value) {
+                  return Validators.required(value, fieldName: 'Name') ??
+                      Validators.minLength(value, 3, fieldName: 'Name');
+                },
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email é obrigatório';
-                  }
-                  if (!value.contains('@')) {
-                    return 'Email inválido';
-                  }
-                  return null;
-                },
+                validator: Validators.email,
               ),
 
               if (state.status == CreateUserStatus.failed)
