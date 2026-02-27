@@ -1,0 +1,18 @@
+{
+  "appTitle": "Users",
+  "name": "Name",
+  "email": "Email",
+  "save": "Save",
+  "newUser": "New User",
+  "userCreated": "User created successfully!",
+  "emailRequired": "Email is required",
+  "invalidEmail": "Invalid email format",
+  "nameRequired": "Name is required",
+  "minLength": "{field} must have at least {length} characters",
+  "@minLength": {
+    "placeholders": {
+      "field": {},
+      "length": {}
+    }
+  }
+}

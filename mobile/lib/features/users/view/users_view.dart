@@ -9,6 +9,7 @@ import 'package:ilia_users/features/users/viewmodel/create_user_bloc.dart';
 import 'package:ilia_users/features/users/viewmodel/user_bloc.dart';
 import 'package:ilia_users/features/users/viewmodel/user_event.dart';
 import 'package:ilia_users/features/users/viewmodel/user_state.dart';
+import 'package:ilia_users/l10n/app_localizations.dart';
 
 class UsersView extends StatefulWidget {
   const UsersView({super.key});
@@ -45,7 +46,7 @@ class _UsersViewContent extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const UIText.header('Usuários'),
+        title: UIText.header(AppLocalizations.of(context)!.appTitle),
         centerTitle: false,
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -91,8 +92,8 @@ class _UsersViewContent extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.primary,
         onPressed: () => _openCreateUserModal(context),
-        label: const Text(
-          'Novo Usuário',
+        label: Text(
+          AppLocalizations.of(context)!.newUser,
           style: TextStyle(color: Colors.white),
         ),
         icon: const Icon(Icons.add, color: Colors.white),
