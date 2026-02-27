@@ -8,5 +8,3 @@ abstract class UserEvent extends Equatable {
 }
 
 class GetUsers extends UserEvent {}
-
-class SortUsersAlphabetically extends UserEvent {}

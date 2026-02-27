@@ -9,7 +9,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc(this._repository) : super(const UserState()) {
     on<GetUsers>(_onGetUsers);
-    on<SortUsersAlphabetically>(_onSortUsers);
   }
 
   Future<void> _onGetUsers(GetUsers event, Emitter<UserState> emit) async {
@@ -27,24 +26,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         );
       },
       (users) {
+        final sortedUsers = List<UserModel>.from(
+          users,
+        )..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
         emit(
           state.copyWith(
             status: UserStatus.success,
-            users: users,
+            users: sortedUsers,
             errorMessage: null,
           ),
         );
       },
     );
-  }
-
-  void _onSortUsers(SortUsersAlphabetically event, Emitter<UserState> emit) {
-    final sortedList = List<UserModel>.from(state.users);
-
-    sortedList.sort(
-      (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-    );
-
-    emit(state.copyWith(users: sortedList));
   }
 }

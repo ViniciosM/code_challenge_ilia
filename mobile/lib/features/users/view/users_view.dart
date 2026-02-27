@@ -49,16 +49,6 @@ class _UsersViewContent extends StatelessWidget {
         centerTitle: false,
         backgroundColor: AppColors.background,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.sort_by_alpha, color: AppColors.primary),
-            tooltip: 'Ordernar por nome',
-            onPressed: () {
-              context.read<UserBloc>().add(SortUsersAlphabetically());
-            },
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
       body: Container(
         color: Colors.white,
