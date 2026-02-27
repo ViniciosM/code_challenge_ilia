@@ -26,25 +26,31 @@ The mobile application follows a modular and layer-based architecture (Clean Arc
 
 ```text
 lib/
-├── core/                       # Shared infrastructure and configurations
+├── core/                       # Shared infrastructure and cross-cutting concerns
 │   ├── design_system/          # UI Foundation (Theme, Colors, Reusable Widgets)
 │   │   ├── theme/              # AppTheme and AppColors
-│   │   └── widgets/            # Generic components like UIButton and UIText
+│   │   └── widgets/            # Generic UI components (e.g., UIButton, UIText)
 │   ├── di/                     # Dependency Injection (GetIt configuration)
 │   │   └── injector.dart
-│   └── network/                # HTTP layer abstraction
-│       ├── response/           # Global app exceptions and failures
-│       └── dio_client.dart     # Dio wrapper with centralized error handling
+│   ├── network/                # HTTP abstraction layer
+│   │   ├── response/           # Global app exceptions and failure models
+│   │   └── dio_client.dart     # Dio wrapper with centralized configuration
+│   └── utils/                  # Reusable utilities
+│       └── validators.dart     # Form validation logic (email, minLength, required)
 │
-├── features/                   # Business modules
+├── features/                   # Business modules (feature-based architecture)
 │   └── users/                  # User management feature
 │       ├── data/               # Data Layer (Models and Repository implementation)
 │       │   ├── models/
 │       │   └── repositories/
-│       ├── view/               # UI Layer (Widgets, Screens, and Modals)
-│       └── viewmodel/          # State Management Layer (Events, States, and Blocs)
+│       ├── view/               # UI Layer (Screens, Widgets, and Modals)
+│       └── viewmodel/          # State Management (Events, States, Bloc)
 │
-└── main.dart                   # Entry point and global providers
+├── l10n/                       # Localization files (ARB format)
+│   ├── app_en.arb              # English translations
+│   └── app_pt.arb              # Portuguese translations
+│
+└── main.dart                   # Application entry point and global configuration
 ```
 ---
 
